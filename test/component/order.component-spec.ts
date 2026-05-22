@@ -23,4 +23,19 @@ describe('Order Component Test with Docker SUT and Mountebank', () => {
         });
       });
   });
+
+  it('should return seeded order from database', async () => {
+  await request(sutBaseUrl)
+    .get('/orders/db-test')
+    .expect(200)
+    .expect((res) => {
+      expect(res.body).toEqual([
+        {
+          id: 'order_seed_001',
+          product_id: 'product_001',
+          amount: 100,
+        },
+      ]);
+    });
+});
 });

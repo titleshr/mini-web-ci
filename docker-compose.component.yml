@@ -1,4 +1,20 @@
 services:
+  postgres-test:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: mini_web_ci_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./test/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d mini_web_ci_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   mountebank:
     image: bbyars/mountebank:2.9.1
     ports:
@@ -22,10 +38,13 @@ services:
       NODE_ENV: test
       PORT: 3000
       PAYMENT_SERVICE_URL: http://mountebank:4545
+      DATABASE_URL: postgresql://test_user:test_password@postgres-test:5432/mini_web_ci_test
     ports:
       - "3001:3000"
     depends_on:
       mountebank:
+        condition: service_healthy
+      postgres-test:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
