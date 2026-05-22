@@ -1,20 +1,23 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import type { CreateOrderBody } from './order.service';
 import { OrderService } from './order.service';
-import { Get } from '@nestjs/common';
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  createOrder(
-    @Body() body: { productId: string; quantity: number; amount: number },
-  ) {
+  createOrder(@Body() body: CreateOrderBody) {
     return this.orderService.createOrder(body);
   }
 
   @Get('db-test')
-  async dbTest() {
+  dbTest() {
     return this.orderService.getOrdersFromDatabase();
-}
+  }
+
+  @Get(':id')
+  getOrderById(@Param('id') id: string) {
+    return this.orderService.getOrderById(id);
+  }
 }

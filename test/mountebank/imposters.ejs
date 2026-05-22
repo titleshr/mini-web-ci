@@ -5,8 +5,8 @@
       "protocol": "http",
       "name": "payment-service-stub",
       "stubs": [
-        <% include stubs/payment-success.json %>,
-        <% include stubs/payment-fail.json %>
+        <%- include('/imposters/stubs/payment-create-failed-by-amount.json') %>,
+        <%- include('/imposters/stubs/payment-success.json') %>
       ]
     }
   ]

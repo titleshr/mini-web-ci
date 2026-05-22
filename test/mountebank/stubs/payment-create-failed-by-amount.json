@@ -3,7 +3,11 @@
     {
       "equals": {
         "method": "POST",
-        "path": "/payments/fail"
+        "path": "/payments",
+        "body": {
+          "orderId": "order_failed_001",
+          "amount": 9999
+        }
       }
     }
   ],
