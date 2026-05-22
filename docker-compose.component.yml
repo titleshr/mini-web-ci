@@ -6,7 +6,7 @@ services:
       - "4545:4545"
     volumes:
       - ./test/mountebank:/imposters
-    command: ["mb", "--configfile", "/imposters/imposters.ejs", "--allowInjection"]
+    command: ["start", "--configfile", "/imposters/imposters.ejs", "--allowInjection"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:2525/config"]
       interval: 5s

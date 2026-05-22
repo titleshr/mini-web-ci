@@ -1,0 +1,13 @@
+{
+  "imposters": [
+    {
+      "port": 4545,
+      "protocol": "http",
+      "name": "payment-service-stub",
+      "stubs": [
+        <% include stubs/payment-success.json %>,
+        <% include stubs/payment-fail.json %>
+      ]
+    }
+  ]
+}

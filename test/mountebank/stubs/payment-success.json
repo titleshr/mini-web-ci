@@ -1,0 +1,24 @@
+{
+  "predicates": [
+    {
+      "equals": {
+        "method": "POST",
+        "path": "/payments"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "is": {
+        "statusCode": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "paymentId": "pay_test_001",
+          "status": "SUCCESS"
+        }
+      }
+    }
+  ]
+}
