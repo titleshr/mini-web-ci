@@ -1,0 +1,45 @@
+services:
+  mountebank:
+    image: bbyars/mountebank:2.9.1
+    ports:
+      - "2525:2525"
+      - "4545:4545"
+    volumes:
+      - ./test/mountebank:/imposters
+    command: ["mb", "--configfile", "/imposters/imposters.ejs", "--allowInjection"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:2525/config"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  sut-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: test
+      PORT: 3000
+      PAYMENT_SERVICE_URL: http://mountebank:4545
+    ports:
+      - "3001:3000"
+    depends_on:
+      mountebank:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  component-test-runner:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      SUT_BASE_URL: http://sut-api:3000
+    depends_on:
+      sut-api:
+        condition: service_healthy
+    command: ["sh", "-c", "npm ci && npm run test:component"]
